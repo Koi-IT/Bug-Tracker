@@ -1,3 +1,15 @@
+<?php
+session_start();
+
+// Check if user is logged in
+if (!isset($_SESSION['user_id'])) {
+    header("Location: login.php");
+    exit();
+}
+
+// Display user information or protected content
+echo "Welcome, " . $_SESSION['username'];
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -24,7 +36,7 @@
     <!-- Navigation-->
     <nav class="navbar navbar-expand-lg bg-secondary text-uppercase fixed-top" id="mainNav">
         <div class="container">
-            <a class="navbar-brand" href="#page-top">Bug Tracker</a>
+            <a class="navbar-brand" href="bugtracker.php">Bug Tracker</a>
             <button class="navbar-toggler text-uppercase font-weight-bold bg-primary text-white rounded" type="button"
                 data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive"
                 aria-expanded="false" aria-label="Toggle navigation">
@@ -34,11 +46,11 @@
             <div class="collapse navbar-collapse" id="navbarResponsive">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded"
-                            href="bugtracker.php">Home</a></li>
+                            href="dashboard.php">Dashboard</a></li>
                     <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded"
-                            href="login.php">Login</a></li>
+                            href="kanbanview.php">Board View</a></li>
                     <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded"
-                            href="signup.php">Sign up</a></li>
+                            href="logout.php">Logout</a></li>
                     <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded"
                             href="index.php">Back to Portfolio</a></li>
                 </ul>
@@ -49,7 +61,7 @@
     <section class="masthead page-section" id="about">
         <div class="container">
             <!-- About Section Heading-->
-            <h2 class="page-section-heading text-center text-uppercase text-secondary mb-0">About</h2>
+            <h2 class="page-section-heading text-center text-uppercase text-secondary mb-0">Dashboard</h2>
             <!-- Icon Divider-->
             <div class="divider-custom">
                 <div class="divider-custom-line"></div>

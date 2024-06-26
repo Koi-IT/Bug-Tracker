@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
@@ -20,6 +19,8 @@
 
 </head>
 
+<?php session_start(); ?>
+
 <body id="page-top">
     <!-- Navigation-->
     <nav class="navbar navbar-expand-lg bg-secondary text-uppercase fixed-top" id="mainNav">
@@ -33,14 +34,30 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarResponsive">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded"
-                            href="bugtracker.php">Home</a></li>
-                    <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded"
+
+                    <?php
+                    // Check if user is logged in
+                    if (!isset($_SESSION['user_id'])) {
+                        ?>
+                            <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded"
                             href="login.php">Login</a></li>
-                    <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded"
-                            href="signup.php">Sign up</a></li>
-                    <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded"
-                            href="index.php">Back to Portfolio</a></li>
+                            <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded"
+                                    href="signup.php">Sign up</a></li>
+                        <?php
+                        
+                    } else {
+                        ?>
+                            <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded"
+                                    href="dashboard.php">Dashboard</a></li>
+                            <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded"
+                                    href="kanbanview.php">Board View</a></li>
+                            <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded"
+                                    href="logout.php">Logout</a></li>
+                        <?php
+                    } 
+                    ?>
+                        <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded"
+                        href="index.php">Back to Portfolio</a></li>
                 </ul>
             </div>
         </div>
@@ -58,14 +75,8 @@
             </div>
             <!-- About Section Content-->
             <div class="row">
-                <div class="col-lg-4 ms-auto">
-                    <p class="lead">Freelancer is a free bootstrap theme created by Start Bootstrap. The download
-                        includes the complete source files including HTML, CSS, and JavaScript as well as optional SASS
-                        stylesheets for easy customization.</p>
-                </div>
-                <div class="col-lg-4 me-auto">
-                    <p class="lead">You can create your own custom avatar for the masthead, change the icon in the
-                        dividers, and add your email address to the contact form to make it fully functional!</p>
+                <div class="text-secondary mb-0 text-center">
+                    <p class="lead">A project management application to help tracks bugs and develop applications. It has Kanban built into the application, authentication using PHP, and is integrated within my portfolio.</p>
                 </div>
             </div>
         </div>

@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 
+<?php require_once("dbconnection.php");?>
+
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
@@ -20,11 +22,48 @@
 
 </head>
 
+<?php
+session_start();
+
+require_once("dbconnection.php");
+
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $username = $_POST['username'];
+    $password = $_POST['password'];
+
+    // Debugging: Check if form data is received
+    error_log("Username: $username, Password: $password");
+
+    // Retrieve user from database
+    $stmt = $pdo->prepare('SELECT id, username, password_hash FROM users WHERE username = ?');
+    $stmt->execute([$username]);
+    $user = $stmt->fetch();
+
+    // Debugging: Check if user is retrieved
+    if ($user) {
+        error_log("User found: " . print_r($user, true));
+    } else {
+        error_log("User not found");
+    }
+
+    // Verify password
+    if ($user && password_verify($password, $user['password_hash'])) {
+        $_SESSION['user_id'] = $user['id'];
+        $_SESSION['username'] = $user['username'];
+        header('Location: dashboard.php'); // Redirect to authenticated page
+        exit;
+    } else {
+        $error = "Invalid username or password";
+    }
+}
+?>
+
 <body id="page-top">
     <!-- Navigation-->
     <nav class="navbar navbar-expand-lg bg-secondary text-uppercase fixed-top" id="mainNav">
         <div class="container">
-            <a class="navbar-brand" href="#page-top">Bug Tracker</a>
+            <a class="navbar-brand" href="bugtracker.php">Bug Tracker</a>
             <button class="navbar-toggler text-uppercase font-weight-bold bg-primary text-white rounded" type="button"
                 data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive"
                 aria-expanded="false" aria-label="Toggle navigation">
@@ -33,8 +72,6 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarResponsive">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded"
-                            href="bugtracker.php">Home</a></li>
                     <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded"
                             href="login.php">Login</a></li>
                     <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded"
@@ -59,45 +96,18 @@
             <!-- Contact Section Form-->
             <div class="row justify-content-center">
                 <div class="col-lg-8 col-xl-7">
-                    <!-- * * * * * * * * * * * * * * *-->
-                    <!-- * * SB Forms Contact Form * *-->
-                    <!-- * * * * * * * * * * * * * * *-->
-                    <!-- This form is pre-integrated with SB Forms.-->
-                    <!-- To make this form functional, sign up at-->
-                    <!-- https://startbootstrap.com/solution/contact-forms-->
-                    <!-- to get an API token!-->
-                    <form id="contactForm" data-sb-form-api-token="API_TOKEN">
+                    <form id="loginForm" action="<?php echo htmlentities($_SERVER['PHP_SELF']); ?>" method="post">
                         <!-- Name input-->
                         <div class="form-floating mb-3">
-                            <input class="form-control" id="name" type="text" placeholder="Enter your name..."
-                                data-sb-validations="required" />
-                            <label for="name">Full name</label>
-                            <div class="invalid-feedback" data-sb-feedback="name:required">A name is required.</div>
+                            <input class="form-control" id="username" name="username" type="text" placeholder="Enter your username..."/>
+                            <label for="username">Username</label>
+                            <div class="invalid-feedback">A username is required.</div>
                         </div>
-                        <!-- Email address input-->
+                        <!-- Password input-->
                         <div class="form-floating mb-3">
-                            <input class="form-control" id="email" type="email" placeholder="name@example.com"
-                                data-sb-validations="required,email" />
-                            <label for="email">Email address</label>
-                            <div class="invalid-feedback" data-sb-feedback="email:required">An email is required.</div>
-                            <div class="invalid-feedback" data-sb-feedback="email:email">Email is not valid.</div>
-                        </div>
-                        <!-- Phone number input-->
-                        <div class="form-floating mb-3">
-                            <input class="form-control" id="phone" type="tel" placeholder="(123) 456-7890"
-                                data-sb-validations="required" />
-                            <label for="phone">Phone number</label>
-                            <div class="invalid-feedback" data-sb-feedback="phone:required">A phone number is required.
-                            </div>
-                        </div>
-                        <!-- Message input-->
-                        <div class="form-floating mb-3">
-                            <textarea class="form-control" id="message" type="text"
-                                placeholder="Enter your message here..." style="height: 10rem"
-                                data-sb-validations="required"></textarea>
-                            <label for="message">Message</label>
-                            <div class="invalid-feedback" data-sb-feedback="message:required">A message is required.
-                            </div>
+                            <input class="form-control" id="password" name="password" type="password" placeholder="Enter your password..."/>
+                            <label for="password">Password</label>
+                            <div class="invalid-feedback">A password is required.</div>
                         </div>
                         <!-- Submit success message-->
                         <!---->
@@ -117,10 +127,10 @@
                         <!-- This is what your users will see when there is-->
                         <!-- an error submitting the form-->
                         <div class="d-none" id="submitErrorMessage">
-                            <div class="text-center text-danger mb-3">Error sending message!</div>
+                            <div class="text-center text-danger mb-3">Error loging in!</div>
                         </div>
                         <!-- Submit Button-->
-                        <button class="btn btn-primary btn-xl disabled" id="submitButton" type="submit">Send</button>
+                        <button class="btn btn-primary btn-xl" id="submitButton" type="submit">Login</button>
                     </form>
                 </div>
             </div>
@@ -392,10 +402,15 @@
             </div>
         </div>
     </div>
+
+    <?php if (isset($error)): ?>
+    <p><?php echo $error; ?></p>
+    <?php endif; ?>
+
     <!-- Bootstrap core JS-->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
     <!-- Core theme JS-->
-    <script src="js/scripts.js"></script>
+    <!-- <script src="js/scripts.js"></script> -->
     <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
     <!-- * *                               SB Forms JS                               * *-->
     <!-- * * Activate your form at https://startbootstrap.com/solution/contact-forms * *-->
