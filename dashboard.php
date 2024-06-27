@@ -18,7 +18,7 @@ echo "Welcome, " . $_SESSION['username'];
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <meta name="description" content="" />
     <meta name="author" content="" />
-    <title>Freelancer - Start Bootstrap Theme</title>
+    <title>Koi-Dev</title>
     <!-- Favicon-->
     <link rel="icon" type="image/x-icon" href="img/icons8-koi-fish-64.png">
     <!-- Font Awesome icons (free version)-->
